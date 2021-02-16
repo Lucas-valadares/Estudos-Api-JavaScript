@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+
 const mailer = require('../../modules/mailer')
 const authConfig = require('../../config/auth');
 const User = require('../models/user');
@@ -90,7 +91,7 @@ router.post('/forgot_password', async (req, res) => {
         });
 
     }catch(err){
-        res.status(400).send({ error:'Erro na senha, tente de novo' })
+        res.status(400).send({ error:'Erro no esqueceu a senha, tente de novo' })
     }
 });
  
@@ -106,12 +107,12 @@ router.post('/reset_password', async (req, res) => {
             return res.status(400).send({ error: 'Usuario não encontrado'});
         
         if(token !== user.passwordResetToken)
-            return res.status(400).send({ error: "token invalido"});
+            return res.status(400).send({ error: "Token invalido"});
 
         const now = new Date();
 
         if(now > user.passwordResetExpires)
-            return res.status(400).send({ error: 'token expirou, gere um outro'});
+            return res.status(400).send({ error: 'Token expirou, gere um novo'});
 
         user.password = password;
 
@@ -120,7 +121,7 @@ router.post('/reset_password', async (req, res) => {
         res.send();
 
     }catch(err){
-        res.status(400).send({error: "não conseguimos mudar sua senha, tente de novo"});
+        res.status(400).send({error: "Não conseguimos mudar sua senha, tente de novo"});
     };
 
 })
