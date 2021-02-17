@@ -3,21 +3,21 @@ const mongoose = require('../../database');
 const TaskSchema = new mongoose.Schema({
     title: { 
         type: String,
-        required: true
+        require: true
     },
     project: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Project',
-        required: true,
+        require: true,
     },
     assignedTo: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
+        require: true,
     },
     completed: {
         type: Boolean,
-        required: true,
+        require: true,
         default: false,
     },
     createdAt: {

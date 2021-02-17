@@ -12,7 +12,8 @@ router.use(authMiddleware);
 //listagem
 router.get('/', async (req, res) => {
     try {
-        const project = await Project.find();
+        const project = await Project.find().populate('user');
+
         return res.send({ project })
     }catch(err) {
         return res.status(400).send({error: "Não foi possivel mostar projetos"})
@@ -21,44 +22,58 @@ router.get('/', async (req, res) => {
 
 //buscar
 router.get('/:projectId', async (req, res) => {
-    res.send({ user: req.userId });
     try {
+        const project =  await Project.findById(req.params.projectId).populate('user');
 
+        return res.send({ project });
     }catch(err) {
-        return res.status(400).send({error: "Não foi possivel criar o projeto"})
+        return res.status(400).send({error: "Não foi possivel buscar o projeto"})
     }
 });
 
 //Criação 
 router.post('/', async (req, res) => {
-    const body = req.body
+
     try {
-        const project = await Project.create(body);
+        const { title, description, task } = req.body;
+
+        const project = await Project.create({ title, description, user: req.userId });
+
+        await Promise.all(task.map ( async taskks => {
+            const projectTask = new Task({ ...taskks, project: project._id });
+
+            await projectTask.save();
+
+            project.task.push(projectTask);
+        }));
+
+        await project.save();
         
         return res.send({ project });        
     } catch(err) {
+        console.log(err)
         return res.status(400).send({ error: "não foi possivel criar um projeto" });
     }
     
 });
 
 //atualizar
-router.put('/:projectId', (req, res) => {
-    res.send({ user: req.userId });
+router.put('/:projectId', async (req, res) => {
     try {
 
     }catch(err) {
-        return res.status(400).send({error: "Não foi possivel criar o projeto"})
+        return res.status(400).send({error: "Falha ao dar update no projeto"})
     }
 });
 
 //deletar
-router.delete('/:projectId', (req, res) => {
-    res.send({ user: req.userId });
+router.delete('/:projectId', async (req, res) => {
     try {
+        await Project.findByIdAndRemove(req.params.projectId);
 
+        return res.send({ sucesso: "o projeto foi excluido com sucesso" });
     }catch(err) {
-        return res.status(400).send({error: "Não foi possivel criar o projeto"})
+        return res.status(400).send({error: "Não foi possivel buscar o projeto"})
     }
 });
 
