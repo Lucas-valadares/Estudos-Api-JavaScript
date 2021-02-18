@@ -12,7 +12,7 @@ router.use(authMiddleware);
 //listagem
 router.get('/', async (req, res) => {
     try {
-        const project = await Project.find().populate('user');
+        const project = await Project.find().populate(['user', 'tasks']);
 
         return res.send({ project })
     }catch(err) {
@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
 //buscar
 router.get('/:projectId', async (req, res) => {
     try {
-        const project =  await Project.findById(req.params.projectId).populate('user');
+        const project =  await Project.findById(req.params.projectId).populate(['user', 'tasks']);
 
         return res.send({ project });
     }catch(err) {
@@ -58,14 +58,36 @@ router.post('/', async (req, res) => {
 });
 
 //atualizar
-router.put('/:projectId', async (req, res) => {
-    try {
-
-    }catch(err) {
-        return res.status(400).send({error: "Falha ao dar update no projeto"})
-    }
-});
-
+router.put('/:projectId', async (req, res) => { 
+    try{
+        const { title, description, tasks } = req.body;
+  
+        const project = await Project.findByIdAndUpdate(req.params.projectId, {
+            title, 
+           description
+       }, {new: true} );
+     
+       project.tasks = [];
+   
+        await Task.remove({ project: project._id });
+   
+        await Promise.all(tasks.map(async task => {
+            const projectTask = new Task({ ...task, project: project._id });
+     
+          await  projectTask.save();
+          
+                project.tasks.push(projectTask);
+            }));
+        
+     
+        await project.save();
+     
+        return res.send({ project });
+          } catch (err) {  console.log(err)
+              return res.status(400).send({ error: 'Error updating new project' });
+          }
+    } );
+    
 //deletar
 router.delete('/:projectId', async (req, res) => {
     try {
