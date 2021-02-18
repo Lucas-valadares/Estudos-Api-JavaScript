@@ -1,7 +1,6 @@
 const express = require('express');
 
 const authMiddleware = require('../middlewares/auth');
-
 const Project = require('../models/project')
 const Task = require('../models/task')
 
@@ -20,6 +19,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+
 //buscar
 router.get('/:projectId', async (req, res) => {
     try {
@@ -31,6 +31,7 @@ router.get('/:projectId', async (req, res) => {
     }
 });
 
+
 //Criação 
 router.post('/', async (req, res) => {
 
@@ -40,7 +41,7 @@ router.post('/', async (req, res) => {
         const project = await Project.create({ title, description, user: req.userId });
 
         await Promise.all(tasks.map ( async task => {
-            const projectTask = new Task({ ...task, project: project._id });
+            const projectTask = new Task({ ...task, project: projectId });
 
             await projectTask.save();
 
@@ -56,6 +57,7 @@ router.post('/', async (req, res) => {
     }
     
 });
+
 
 //atualizar
 router.put('/:projectId', async (req, res) => { 
@@ -88,6 +90,7 @@ router.put('/:projectId', async (req, res) => {
           }
     } );
     
+
 //deletar
 router.delete('/:projectId', async (req, res) => {
     try {
