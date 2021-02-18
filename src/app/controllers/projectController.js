@@ -34,7 +34,6 @@ router.get('/:projectId', async (req, res) => {
 
 //Criação 
 router.post('/', async (req, res) => {
-
     try {
         const { title, description, tasks } = req.body;
 
@@ -101,7 +100,5 @@ router.delete('/:projectId', async (req, res) => {
         return res.status(400).send({error: "Não foi possivel buscar o projeto"})
     }
 });
-
-
 
 module.exports = app => app.use('/projects', router);
