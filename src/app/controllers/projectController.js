@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
         const project = await Project.create({ title, description, user: req.userId });
 
         await Promise.all(tasks.map ( async task => {
-            const projectTask = new Task({ ...task, project: projectId });
+            const projectTask = new Task({ ...task, project: project._Id });
 
             await projectTask.save();
 
