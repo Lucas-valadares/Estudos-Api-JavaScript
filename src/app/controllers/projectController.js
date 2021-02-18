@@ -34,7 +34,6 @@ router.get('/:projectId', async (req, res) => {
 
 //Criação 
 router.post('/', async (req, res) => {
-
     try {
         const { title, description, tasks } = req.body;
 
