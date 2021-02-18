@@ -10,14 +10,31 @@ router.delete(authMiddleware);
 // Lista de Usuarios
 router.get('/', async (req, res) => {
     try{
+        if(!user)
+            return res.status(404).send({ error: "Nenhum usuario encontrado"});
+
         const user = await User.find();
 
         return res.send(user);
 
     }catch(err){
-        return res.status(400).send({ error: "Lista de usuarios não encontrados"});
+        return res.status(400).send({ error: "Erro na Listagem de usuarios"});
     }
 });
+
+// Lista de usuarios, apenas com o nickname
+/* router.get('/', async (req, res) => {
+    try{
+        if(!user)
+        return res.status(404).send({ error: "Nenhum usuario encontrado"});
+
+        const user = await User.find(this.name);
+
+        return res.send(user);
+    }catch(err) {
+        return res.status(400).send({ error: "erro ao buscar Usuarios" });
+    }
+}); */
 
 // Usuario especifico
 router.get('/:userId', async (req, res) => {
