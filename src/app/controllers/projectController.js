@@ -39,6 +39,9 @@ router.post('/', async (req, res) => {
 
         const project = await Project.create({ title, description, user: req.userId });
 
+        // if(project)
+        // return res.status(200).send({ Warning: "projeto criado com sucesso"});
+
         await Promise.all(tasks.map ( async task => {
             const projectTask = new Task({ ...task, project: project._Id });
 
@@ -48,6 +51,7 @@ router.post('/', async (req, res) => {
         }));
 
         await project.save();
+
         
         return res.send({ project });        
     } catch(err) {
