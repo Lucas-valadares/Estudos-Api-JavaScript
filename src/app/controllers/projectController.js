@@ -1,7 +1,6 @@
 const express = require('express');
 
 const authMiddleware = require('../middlewares/auth');
-
 const Project = require('../models/project')
 const Task = require('../models/task')
 
@@ -20,6 +19,7 @@ router.get('/', async (req, res) => {
     }
 });
 
+
 //buscar
 router.get('/:projectId', async (req, res) => {
     try {
@@ -30,6 +30,7 @@ router.get('/:projectId', async (req, res) => {
         return res.status(400).send({error: "Não foi possivel buscar o projeto"})
     }
 });
+
 
 //Criação 
 router.post('/', async (req, res) => {
@@ -56,6 +57,7 @@ router.post('/', async (req, res) => {
     }
     
 });
+
 
 //atualizar
 router.put('/:projectId', async (req, res) => { 
@@ -88,6 +90,7 @@ router.put('/:projectId', async (req, res) => {
           }
     } );
     
+
 //deletar
 router.delete('/:projectId', async (req, res) => {
     try {
